@@ -5,6 +5,14 @@ from manim_physics import *
 import numpy as np
 
 
+# Chris Agrella (2023-01-24)
+# Scenes: BubbleSort, InsertionSort, RainbowPendulum, SierpinskiTriangle
+
+# How-to:
+# pip install manim manim-physics manim-data-structures
+# manim -qh --flush_cache -v WARNING final.py BubbleSort InsertionSort RainbowPendulum SierpinskiTriangle
+
+
 class BubbleSort(Scene):
     def swap_bubbles(self, arr, index1, index2):
         arr_v = arr.fetch_arr()
@@ -60,9 +68,12 @@ class BubbleSort(Scene):
         swap_tracker = swap_osc_var.tracker
         self.play(Write(swap_osc_var))
 
+        self.wait(10)
+
         for i in range(n - 1):
-            if i != 0:
+            if i == 1:
                 self.play(Create(i_ptr))
+            if i != 0:
                 i_ptr.shift_to_elem(n - i)
             for j in range(0, n - i - 1):
                 self.move_elems(window, j_ptr, j)
@@ -70,6 +81,7 @@ class BubbleSort(Scene):
                 if a[j] > a[j + 1]:
                     self.swap_bubbles(arr, j, j + 1)
                     self.play(swap_tracker.animate.increment_value(1), run_time=0.2)
+            self.wait(3)
 
         self.play(FadeOut(j_ptr), FadeOut(window), FadeOut(i_ptr))
 
@@ -85,14 +97,13 @@ class RainbowPendulum(SpaceScene):
         for i, color in enumerate([BLUE, GREEN, YELLOW, ORANGE, RED][::-1]):
             self.add(TracedPath(p.bobs[i].get_center, stroke_color=color))
 
-        self.wait(14)
+        self.wait(19)
 
         p.end_swinging()
 
-        self.wait(5)
+        self.wait(3)
 
 
-PI = np.pi
 BASE_SIZE = 6
 MAX_DEPTH = 6
 
@@ -180,6 +191,8 @@ class SierpinskiTriangle(Scene):
         # fade in
         self.play_animation_by_depth(Create, 1, 0.2)
 
+        self.wait(3)
+
         # fade out
         self.play_animation_by_depth(Uncreate, 1, 0.1, reverse=True)
 
@@ -255,6 +268,8 @@ class InsertionSort(Scene):
         )
         j_created = False
 
+        self.wait(3)
+
         i = 1
         while i < n:
             if not j_created:
@@ -270,12 +285,15 @@ class InsertionSort(Scene):
             if i < n:
                 window.resize_window(i)
                 self.shift_pointer(i_ptr, i)
+            self.wait(3)
 
         self.play(FadeOut(j_ptr), FadeOut(window), FadeOut(i_ptr))
 
     def construct(self):
-        arr = MArray(self, [7, 3, 8, 4, 1], label="Array").shift(LEFT * 2)
+        arr = MArray(self, [8, 7, 6, 5, 4, 1], label="Array").shift(LEFT * 2)
         self.play(Create(arr))
+
+        self.wait(8)
 
         self.run_insertion_sort(arr)
 
